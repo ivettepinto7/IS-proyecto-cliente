@@ -40,7 +40,7 @@ export function PrevAppointmentsTable() {
         <DataTable showGridlines ref={dt} value={prevAppointmentsList}
           dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+          currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} citas previas"
           loading={loading} header={header} responsiveLayout="scroll">
           <Column field="timestamp" header="Fecha de la cita" style={{ minWidth: '12rem' }}></Column>
           <Column field="appointment_details" header="Descripción" style={{ minWidth: '12rem' }}></Column>

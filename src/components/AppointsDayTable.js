@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import MenuContext from "../contexts/MenuContext/MenuContext";
-import { UserContext } from '../contexts/UserContext/UserContext';
+import { UserContext, SetUserContext } from '../contexts/UserContext/UserContext';
 
 //Components imports
 import { DataTable } from "primereact/datatable";
@@ -17,7 +17,8 @@ import UserRecordTable from "./EmergentWindows/UserRecordTable";
 
 export default function AppointsDayTable() {
   const menuContext = useContext(MenuContext);
-  const { role, token, settingFullname, settingAge, settingGender, settingIdAppointment, settingUserCode } = useContext(UserContext);
+  const { role, token } = useContext(UserContext);
+  const { setConsultationInfo } = useContext(SetUserContext);
   const navigate = useNavigate();
 
   const dt = useRef(null);
@@ -28,13 +29,13 @@ export default function AppointsDayTable() {
   var url = "";
 
   const getUrl = (role) => {
-    switch(role){
+    switch (role) {
       case 3:
-          return url = "secretary/";
+        return url = "secretary/";
       case 4:
         return url = "doctor/";
-      default: 
-        return url = ""; 
+      default:
+        return url = "";
     }
   }
 
@@ -63,11 +64,13 @@ export default function AppointsDayTable() {
             tooltipOptions={{ position: 'bottom' }}
             className="p-button-rounded p-button-success mr-2"
             onClick={() => {
-              settingUserCode(rowData.id_patient.id_person);
-              settingIdAppointment(rowData.id_appointment);
-              settingFullname(rowData.id_patient.name, rowData.id_patient.last_name);
-              settingAge(getAge(rowData.id_patient.birthdate));
-              settingGender(rowData.id_patient.gender);
+              setConsultationInfo({
+                userCode: rowData.id_patient,
+                appointmentId: rowData.id_appointment,
+                fullName: rowData.id_patient.name + ' ' + rowData.id_patient.last_name,
+                age: getAge(rowData.id_patient.birthdate),
+                gender: rowData.id_patient.gender,
+              })
               getUserRecords(rowData.id_patient.id_person);
               navigate("/landing/citas-dia/consulta")
             }}
@@ -117,19 +120,17 @@ export default function AppointsDayTable() {
     return rowData.id_patient.name + ' ' + rowData.id_patient.last_name;
   }
 
-  function getAge(dateString) 
-{
+  function getAge(dateString) {
     var today = new Date();
     var birthDate = new Date(dateString);
     var age = today.getFullYear() - birthDate.getFullYear();
     var m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
-    {
-        age--;
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
     return age;
-}
-  
+  }
+
   const ageBodyTemplate = (rowData) => {
     return getAge(rowData.id_patient.birthdate);
   }
@@ -147,7 +148,7 @@ export default function AppointsDayTable() {
   return (
     <div className="w-full overflow-hidden">
 
-      <UserRecordTable loading={loading2}  userRecordsList={userRecordsList}/>
+      <UserRecordTable loading={loading2} userRecordsList={userRecordsList} />
       <div className="card">
 
 

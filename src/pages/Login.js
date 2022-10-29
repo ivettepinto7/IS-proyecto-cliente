@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form';
 export default function Login() {
     const { getUserStorage } = useContext(UserContext);
     const { token, status } = getUserStorage();
-    const setUser = useContext(SetUserContext);
+    const { setUser } = useContext(SetUserContext);
     const navigate = useNavigate();
     const toast = useRef(null);
 

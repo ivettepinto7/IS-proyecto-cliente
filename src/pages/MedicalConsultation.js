@@ -16,12 +16,13 @@ import CreatePrescription from "../components/EmergentWindows/CreatePrescription
 
 
 export default function MedicalConsultation() {
-  const { token, fullname, age, gender, idAppointment, userCode } = useContext(UserContext);
-  
+  const { token, consultationInfo } = useContext(UserContext);
+  const { userCode,fullName,age,gender } =consultationInfo;
   const navigate = useNavigate();
   const menuContext = useContext(MenuContext);
   const patient = PatientInConsult;
-  const [value, setValue] = useState('');
+  const [description, setDescription] = useState('');
+  
   if (patient.at(0).gender === 'm')
     patient.at(0).gender = 'Masculino'
   else if (patient.at(0).gender === 'f')
@@ -54,11 +55,11 @@ export default function MedicalConsultation() {
       <UserRecordTable loading={loading2} userRecordsList={userRecordsList} />
       <CreatePrescription code={userCode} />
       <h1 className="text-3xl">Consulta</h1>
-      <h2 className='lg:text-xl'><b>Nombre: </b>{fullname}</h2>
+      <h2 className='lg:text-xl'><b>Nombre: </b>{fullName}</h2>
       <h2 className='lg:text-xl'><b>Edad: </b>{age}</h2>
-      <h2 className='lg:text-xl'><b>Género: </b>{gender === "F" ? 'Femenino' : 'Masculino'}</h2>
+      <h2 className='lg:text-xl'><b>Género: </b>{gender === "M" ? 'Masculino' : 'Femenino'}</h2>
       <h2 className='lg:text-xl'><b>Discutido en cita:</b></h2>
-      <InputTextarea onChange={(e) => setValue(e.target.value)} rows={5} cols={50} />
+      <InputTextarea onChange={(e) => setDescription(e.target.value)} rows={5} cols={50} />
       <br />
       <div className="lg:flex lg:flex-row lg:justify-evenly xsm:flex-col xsm:justify-center lg:w-1/2">
         <div className="xsm:m-1 lg:justify-evenly lg:flex">
