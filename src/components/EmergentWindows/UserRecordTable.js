@@ -1,20 +1,15 @@
 import React, { useState,useEffect, useContext, useRef } from "react";
-import axios from "axios";
 import MenuContext from "../../contexts/MenuContext/MenuContext";
-import { UserContext } from "../../contexts/UserContext/UserContext";
 
 //Components imports
 import { DataTable } from "primereact/datatable";
 import { Column } from 'primereact/column';
-import { InputText } from "primereact/inputtext"
 import { Dialog } from 'primereact/dialog';
 import '../cssFiles/DataTable.css';
 
 //Helpers imports
-import { UserRecord } from "../../helpers/UserRecord";
 
 export default function UserRecordTable({loading, userRecordsList}) {
-  const { role, token, userCode } = useContext(UserContext);
   const { emergentShowRecordState } = useContext(MenuContext);
   const menuContext = useContext(MenuContext);
   

@@ -19,7 +19,7 @@ export default function SideBar() {
     const navigate = useNavigate();
     const [active, setActive] = useState(false);
     const { name, username, last_name, getUserStorage } = useContext(UserContext);
-    const setUser = useContext(SetUserContext);
+    const { setUser } = useContext(SetUserContext);
     const { role } = getUserStorage();
     const menuContext = useContext(MenuContext);
     const routes = convertRoutes(navigate);
