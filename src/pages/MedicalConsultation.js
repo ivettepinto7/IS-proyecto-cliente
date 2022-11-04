@@ -34,7 +34,7 @@ const DrugsSchema = Yup.object().shape({
 
 export default function MedicalConsultation() {
   const { token, role, consultationInfo } = useContext(UserContext);
-  const { userCode, fullName, age, gender } = consultationInfo;
+  const { userCode, fullName, age, gender, appointmentId } = consultationInfo;
   const navigate = useNavigate();
   const menuContext = useContext(MenuContext);
   const [description, setDescription] = useState('');
@@ -74,15 +74,15 @@ export default function MedicalConsultation() {
     }
   };
 
-const dialogFooter = () => {
-  return (
-    <div className="flex justify-content-center"><Button label="OK" className="p-button-text"
+  const dialogFooter = () => {
+    return (
+      <div className="flex justify-content-center"><Button label="OK" className="p-button-text"
         autoFocus onClick={() => {
           setShowMessage(false);
-          navigate('/landing/citas-dia')
+          navigate('/landing/citas-dia');
         }} /></div>
-        )
-      };
+    )
+  };
 
   return (
     <div className="h-screen max-h-screen bg-black w-full mt-4">
@@ -114,8 +114,22 @@ const dialogFooter = () => {
         }}
         validationSchema={DrugsSchema}
         onSubmit={values => {
-          setShowMessage(true);
-
+          try {
+            let data = {
+              id_appointment: appointmentId,
+              medicines: values.list,
+              indication: description
+            };
+            console.log(data);
+            axios.post(process.env.REACT_APP_API_URL + `doctor/citas-dia/consulta/receta/crear`, data, { headers: { Authorization: `Bearer ${token}` } })
+              .then(res => {
+                if (res.status === 201) {
+                  setShowMessage(true);
+                }
+              }).catch(err => console.error(err));
+          } catch (error) {
+            throw console.error(error);
+          }
         }}
         children={({ values, errors, touched }) => (
           <Form>
