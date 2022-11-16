@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+mport React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from "yup";
@@ -124,7 +124,12 @@ export default function MedicalConsultation() {
             axios.post(process.env.REACT_APP_API_URL + `doctor/citas-dia/consulta/receta/crear`, data, { headers: { Authorization: `Bearer ${token}` } })
               .then(res => {
                 if (res.status === 201) {
-                  setShowMessage(true);
+                  axios.put(process.env.REACT_APP_API_URL + `doctor/citas-dia/consulta/finalizar/${parseInt(appointmentId)}`,null, { headers: { Authorization: `Bearer ${token}` } })
+                  .then(res => {
+                    if(res.status === 200){
+                      setShowMessage(true);
+                    }
+                  }).catch(err => console.error(err));
                 }
               }).catch(err => console.error(err));
           } catch (error) {
