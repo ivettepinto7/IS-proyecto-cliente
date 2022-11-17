@@ -1,4 +1,5 @@
-mport React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
+
 import axios from "axios";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from "yup";
@@ -29,7 +30,7 @@ const DrugsSchema = Yup.object().shape({
           .min(1, 'La cantidad minima es 1')
           .required('Requerido')
       })
-    ).max(9, 'Solo puede agregar 9 medicamentos.')
+    ).max(9, 'Solo puede agregar 9 medicamentos. ')
 });
 
 export default function MedicalConsultation() {
