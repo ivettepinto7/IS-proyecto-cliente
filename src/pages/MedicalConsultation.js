@@ -121,7 +121,6 @@ export default function MedicalConsultation() {
               medicines: values.list,
               indication: description
             };
-            console.log(data);
             axios.post(process.env.REACT_APP_API_URL + `doctor/citas-dia/consulta/receta/crear`, data, { headers: { Authorization: `Bearer ${token}` } })
               .then(res => {
                 if (res.status === 201) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useCallback } from 'react'
 import axios from 'axios';
 import { UserContext } from '../contexts/UserContext/UserContext';
 import { useForm } from 'react-hook-form';
@@ -37,13 +37,25 @@ export default function ScheduleAppointment() {
     const [shiftsList, setShiftsList] = useState([]);
     const [areasList, setAreasList] = useState([]);
     const [testsList, setTestsList] = useState([]);
-    let url = "";
     let idVATAppointment = null;
+
+    const getUrl = useCallback(
+      (role) => {
+        switch (role) {
+            case 2:
+                return "patient/";
+            case 3:
+                return "secretary/";
+            default:
+                return "";
+        }
+      },
+      [],
+    );
 
     useEffect(() => {
         try {
-            getUrl(role);
-            axios.get(process.env.REACT_APP_API_URL + url + "vaccines", { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(process.env.REACT_APP_API_URL + getUrl(role) + "vaccines", { headers: { Authorization: `Bearer ${token}` } })
                 .then((res) => {
                     if (res.status === 200) {
                         return setVaccinesList(res.data);
@@ -51,7 +63,7 @@ export default function ScheduleAppointment() {
                 })
                 .catch(err => console.error(err));
 
-            axios.get(process.env.REACT_APP_API_URL + url + "areas", { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(process.env.REACT_APP_API_URL + getUrl(role) + "areas", { headers: { Authorization: `Bearer ${token}` } })
                 .then((res) => {
                     if (res.status === 200) {
                         return setAreasList(res.data);
@@ -59,7 +71,7 @@ export default function ScheduleAppointment() {
                 })
                 .catch(err => console.error(err));
 
-            axios.get(process.env.REACT_APP_API_URL + url + "tests", { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(process.env.REACT_APP_API_URL + getUrl(role) + "tests", { headers: { Authorization: `Bearer ${token}` } })
                 .then((res) => {
                     if (res.status === 200) {
                         return setTestsList(res.data);
@@ -67,7 +79,7 @@ export default function ScheduleAppointment() {
                 })
                 .catch(err => console.error(err));
 
-            axios.get(process.env.REACT_APP_API_URL + url + "shifts", { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(process.env.REACT_APP_API_URL + getUrl(role) + "shifts", { headers: { Authorization: `Bearer ${token}` } })
                 .then((res) => {
                     if (res.status === 200) {
                         return setShiftsList(res.data);
@@ -77,18 +89,7 @@ export default function ScheduleAppointment() {
         } catch (error) {
             throw console.error(error);
         }
-    }, [url, role, token]);
-
-    const getUrl = (role) => {
-        switch (role) {
-            case 2:
-                return url = "patient/";
-            case 3:
-                return url = "secretary/";
-            default:
-                return url = "";
-        }
-    }
+    }, [getUrl, role, token]);
 
     const { control, formState: { errors }, handleSubmit, reset, watch } = useForm();
     const inmunization = watch('inmunization', false);
@@ -130,16 +131,15 @@ export default function ScheduleAppointment() {
                     idVAT: idVATAppointment,
                     date: dateAppointment.toString(),
                 };
-            }else{
+            } else {
                 data = {
                     type: selectedAppointmentType.code,
                     idVAT: idVATAppointment,
                     date: dateAppointment.toString(),
                 };
             }
-            axios.post(process.env.REACT_APP_API_URL + url + "schedule-appointment", data, { headers: { Authorization: `Bearer ${token}` } })
+            axios.post(process.env.REACT_APP_API_URL + getUrl(role) + "schedule-appointment", data, { headers: { Authorization: `Bearer ${token}` } })
                 .then(res => {
-                    console.log("RES ",res);
                     if (res.status === 201) {
                         setShowMessage(true);
                         reset();
@@ -212,7 +212,7 @@ export default function ScheduleAppointment() {
                         <div className="flex justify-content-center flex-column pt-6 px-3">
                             <i className="pi pi-exclamation-circle" style={{ fontSize: '5rem', color: 'red' }}></i>
                             <h1 style={{ lineHeight: 1.5, textIndent: '1rem' }}>
-                                {  errorMessage}
+                                {errorMessage}
                             </h1>
                         </div>
                     </Dialog>
