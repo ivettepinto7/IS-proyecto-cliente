@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+
 import axios from "axios";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from "yup";
@@ -29,7 +30,7 @@ const DrugsSchema = Yup.object().shape({
           .min(1, 'La cantidad minima es 1')
           .required('Requerido')
       })
-    ).max(9, 'Solo puede agregar 9 medicamentos.')
+    ).max(9, 'Solo puede agregar 9 medicamentos. ')
 });
 
 export default function MedicalConsultation() {
@@ -62,10 +63,9 @@ export default function MedicalConsultation() {
 
   const getUserRecords = (id) => {
     try {
-      axios.get(process.env.REACT_APP_API_URL + `doctor/citas-dia/consulta/expediente/${userCode}`, { headers: { Authorization: `Bearer ${token}` } })
+      axios.get(process.env.REACT_APP_API_URL + `doctor/citas-dia/consulta/expediente/${id}`, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => {
           if (res.status === 200) {
-
             setUserRecordsList(res.data);
             setLoading2(false);
           }
@@ -87,12 +87,7 @@ export default function MedicalConsultation() {
 
   return (
     <div className="h-screen max-h-screen bg-black w-full mt-4">
-      {
-        menuContext.emergentShowRecordState === true ?
-        <UserRecordTable loading={loading2} userRecordsList={userRecordsList} />
-        :
-        ""
-      }
+      <UserRecordTable loading={loading2} userRecordsList={userRecordsList} />
       <Dialog visible={showMessage} onHide={() => setShowMessage(false)} position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
         <div className="flex justify-content-center flex-column pt-6 px-3">
           <i className="pi pi-check-circle" style={{ fontSize: '5rem', color: 'var(--green-500)' }}></i>
@@ -101,11 +96,11 @@ export default function MedicalConsultation() {
           </p>
         </div>
       </Dialog>
-      <h1 data-testid="page-title" className="lg:text-4xl md:text-3xl sm:text-2xl xsm:text-xl text-center">Consulta</h1>
+      <h1 className="lg:text-4xl md:text-3xl sm:text-2xl xsm:text-xl text-center">Consulta</h1>
       <div className="text-center grid grid-cols-3 mt-4">
-        <h2 className="lg:text-2xl md:text-xl sm:text-xs xsm:text-xs flex flex-col"><b>Nombre: </b><span data-testid="patient-name">{fullName}</span></h2>
-        <h2 className="lg:text-2xl md:text-xl sm:text-xs xsm:text-xs flex flex-col"><b>Edad: </b><span data-testid="patient-age">{age} años</span></h2>
-        <h2 className="lg:text-2xl md:text-xl sm:text-xs xsm:text-xs flex flex-col"><b>Género: </b><span data-testid="patient-gender">{gender === "M" ? 'Masculino' : 'Femenino'}</span></h2>
+        <h2 className="lg:text-2xl md:text-xl sm:text-xs xsm:text-xs flex flex-col"><b>Nombre: </b>{fullName}</h2>
+        <h2 className="lg:text-2xl md:text-xl sm:text-xs xsm:text-xs flex flex-col"><b>Edad: </b>{age} años</h2>
+        <h2 className="lg:text-2xl md:text-xl sm:text-xs xsm:text-xs flex flex-col"><b>Género: </b>{gender === "M" ? 'Masculino' : 'Femenino'}</h2>
       </div>
 
       <Formik
@@ -126,7 +121,6 @@ export default function MedicalConsultation() {
               medicines: values.list,
               indication: description
             };
-            console.log(data);
             axios.post(process.env.REACT_APP_API_URL + `doctor/citas-dia/consulta/receta/crear`, data, { headers: { Authorization: `Bearer ${token}` } })
               .then(res => {
                 if (res.status === 201) {
@@ -158,8 +152,8 @@ export default function MedicalConsultation() {
                         {values.list && values.list.length > 0 ? (
                           values.list.map((item, index) => (
                             <div className="flex justify-center items-center" key={index} >
-                              <Field data-testid="drugs-dropdown" placeholder="Seleccionar medicina" className="bg-gray-700 text-white text-sm w-1/4 mx-2" as="select" name={`list.${index}.medicine`} key={`list.${index}.medicine`}>
-                                <option data-testid="default-option" value={-1} disabled={true}>Seleccionar medicamento</option>
+                              <Field placeholder="Seleccionar medicina" className="bg-gray-700 text-white text-sm w-1/4 mx-2" as="select" name={`list.${index}.medicine`} key={`list.${index}.medicine`}>
+                                <option value={-1} disabled={true}>Seleccionar medicamento</option>
                                 {
                                   drugsList && drugsList.map((drug, index) =>
                                     <option key={parseInt(drug.id_drug)} value={parseInt(drug.id_drug)} defaultValue={undefined}>{drug.name.toString()}</option>
@@ -203,7 +197,7 @@ export default function MedicalConsultation() {
                         <FontAwesomeIcon className="text-yellow-500 text-4xl mx-4" icon={faPenToSquare} />
                         <h2 className="lg:text-2xl md:text-xl sm:text-xs xsm:text-xs"><b>Nota adicional de la consulta</b></h2>
                       </div>
-                      <InputTextarea data-testid="instruction" placeholder="Ej: Regresar a consulta al terminar tratamiento." className="mt-4" onChange={(e) => setDescription(e.target.value)} rows={5} cols={50} />
+                      <InputTextarea placeholder="Ej: Regresar a consulta al terminar tratamiento." className="mt-4" onChange={(e) => setDescription(e.target.value)} rows={5} cols={50} />
                     </div>
                   </div>
                   <div className="lg:flex md:flex lg:justify-around md:justify-around sm:justify-center xsm:justify-center m-6">
@@ -211,7 +205,7 @@ export default function MedicalConsultation() {
                       type="button"
                       className="flex justify-center items-center text-white text-xl p-2 rounded-lg tracking-wide font-bold focus:outline-none focus:shadow-outline hover:bg-yellow-600 shadow-lg bg-yellow-700 cursor-pointer transition ease-in duration-300"
                       onClick={() => {
-                        getUserRecords(userCode);
+                        getUserRecords(userCode.id_person);
                         menuContext.settingEmergentShowRecordState();
                       }}
                     >
