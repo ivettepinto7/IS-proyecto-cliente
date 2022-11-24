@@ -27,7 +27,7 @@ export default function UserPrescriptionTable() {
       throw console.error(error);
     }
   })
-  
+
   const header = (
     <div className="table-header">
       <h5 className="mx-0 my-1">Recetas médicas</h5>
@@ -37,9 +37,24 @@ export default function UserPrescriptionTable() {
   //`Medicamento: de laboratorio , activo: ${rowData.id_drug.active} al ${rowData.id_drug.active_percentage} `
   const drugBodyTemplate = (rowData) => {
     return <span>
-      <h1>Medicamento: <b>{rowData.id_drug.name}</b></h1>
-      <h1>Del laboratorio: <b>{rowData.id_drug.drug_lab}</b></h1>
-      <h1>Activo: <b>{rowData.id_drug.active}</b> al <b>{rowData.id_drug.active_percentage}%</b></h1>
+      {
+        rowData.id_drug &&
+        <h1>
+          Medicamento: <b>{rowData.id_drug.name}</b>
+        </h1>
+      }
+      {
+        rowData.id_drug &&
+        <h1>
+          Del laboratorio: <b>{rowData.id_drug.drug_lab}</b>
+        </h1>
+      }
+      {
+        rowData.id_drug &&
+        <h1>
+          Activo: <b>{rowData.id_drug.active}</b>
+        </h1>
+      }
     </span>
   }
 
