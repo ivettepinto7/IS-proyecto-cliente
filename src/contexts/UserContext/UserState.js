@@ -56,7 +56,6 @@ const UserState = (props) => {
 
     const setConsultationInfo = (args) => {
         setUserState(currentState => {
-            console.log(currentState);
             return {
                 ...currentState,
                 consultationInfo: {
